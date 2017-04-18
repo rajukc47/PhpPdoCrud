@@ -1,17 +1,8 @@
 <?php
 session_start();
-define('HOSTNAME','localhost');
-define('USERNAME','root');
-define('PASSWORD','');
-define('DBNAME','db_test');
-$message = null;
-
-try
-{
-	$connect=new PDO("mysql:host=".HOSTNAME.";dbname=".DBNAME,USERNAME,PASSWORD);
-	$connect->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-
-	if(isset($_POST['login']))
+require "db.php";
+//form handling
+if(isset($_POST['login']))
 	{
 		$uname=$_POST['username'];
 		$pword=$_POST['password'];
@@ -35,11 +26,6 @@ try
 			}
 		}
 	}
-}
-catch(PDOException $e)
-{
-	$message=$e->getMessage();
-}
 ?>
 
 <!DOCTYPE html>
