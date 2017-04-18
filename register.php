@@ -14,7 +14,7 @@ if(isset($_POST['register']))
 		}
 		else
 		{
-			$query="INSERT INTO tbl_user(fullname,username,password,email) VAlUES(:fullname,:username:password,:email)";
+			$query="INSERT INTO tbl_user(fullname,username,password,email) VAlUES(:fullname, :username ,:password, :email)";
 			$stmt=$connect->prepare($query);
 			$stmt->bindValue('fullname',$fullname);
 			$stmt->bindValue('username',$username);
