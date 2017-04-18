@@ -1,67 +1,81 @@
 <?php
-session_start();
-define('HOSTNAME','localhost');
-define('USERNAME','root');
-define('PASSWORD','');
-define('DBNAME','db_test');
-$message = null;
+require "db.php";
 
-try
-{
-	$connect=new PDO("mysql:host=".HOSTNAME.";dbname=".DBNAME,USERNAME,PASSWORD);
-	$connect->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-
-	if(isset($_POST['login']))
+if(isset($_POST['register']))
 	{
-		$uname=$_POST['username'];
-		$pword=$_POST['password'];
+		$fullname=$_POST['fullname'];
+		$username=$_POST['username'];
+		$password=$_POST['password'];
+		$email=$_POST['email'];
 
-		if(empty($uname) || empty($pword))
+		if(empty($fullname) || empty($username) || empty($password) || empty($email))
 		{
 			$message="All Fields Are Required!";
 		}
 		else
 		{
-			$query="SELECT * FROM tbl_user WHERE username=:username AND password=:password";
+			$query="INSERT INTO tbl_user(fullname,username,password,email) VAlUES(:fullname,:username:password,:email)";
 			$stmt=$connect->prepare($query);
-			$stmt->execute(array('username'=>$uname,'password'=>$pword));
-			$count=$stmt->rowCount();
-			if($count>0){
-				$_SESSION['username']=$uname;
-				header("location:admin.php");
+			$stmt->bindValue('fullname',$fullname);
+			$stmt->bindValue('username',$username);
+			$stmt->bindValue('password',$password);
+			$stmt->bindValue('email',$email);
+			$flag=$stmt->execute();
+			if($flag){
+				$message="Data Successfully Inserted.";
 			}
 			else{
-				$message="Invalid Username or Password!";
+				$message="Data Failed to Insert.";
 			}
 		}
-	}
-}
-catch(PDOException $e)
-{
-	$message=$e->getMessage();
 }
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Login Form</title>
+	<title>Registration Form</title>
 	<?php include('top.inc.php'); ?>
 </head>
 <body>
 <div class="container" style="width: 500px;">
-	<h1>Login Form</h1>
+	<h1>Registration Form</h1>
 	<?php
 		echo isset($message)?"<p class='alert alert-danger'>$message</p>":'';
 	?>
-	<form method="post">
-		<label>Username </label>
-		<input type="text" name="username" class="form-control"><br />
-		<label>Password </label>
-		<input type="password" name="password" class="form-control"><br />
-		<input type="submit" name="login" value="Login" class="btn btn-info">
-	</form>
-	<a href="register.php">Register Here</a>
+<form class="form-horizontal" method="post">
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="fullname">Fullname:</label>
+    <div class="col-sm-10">
+      <input type="text" name="fullname" class="form-control" id="fullname" placeholder="Enter Fullname">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="username">Username:</label>
+    <div class="col-sm-10">
+      <input type="text" name="username" class="form-control" id="username" placeholder="Enter Username">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="password">Password:</label>
+    <div class="col-sm-10">
+      <input type="password" name="password" class="form-control" id="password" placeholder="Enter Password">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="email">Email:</label>
+    <div class="col-sm-10"> 
+      <input type="email" name="email" class="form-control" id="email" placeholder="Enter Email">
+    </div>
+  </div>
+  
+  <div class="form-group"> 
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" name="register" class="btn btn-info">Register</button>
+    </div>
+  </div>
+</form>
+	<a href="login.php">Click Here To Login</a>
 </div>
 </body>
 </html>
