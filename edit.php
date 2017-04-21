@@ -3,6 +3,7 @@ require "db.php";
 
 if(isset($_POST['update']))
 	{
+		$id=$_POST['id'];
 		$fullname=$_POST['fullname'];
 		$username=$_POST['username'];
 		$email=$_POST['email'];
@@ -13,11 +14,12 @@ if(isset($_POST['update']))
 		}
 		else
 		{
-			$query="UPDATE tbl_user SET fullname=:fullname,username=:username,email=:email";
+			$query="UPDATE tbl_user SET fullname=:fullname,username=:username,email=:email WHERE id=:id";
 			$stmt=$connect->prepare($query);
 			$stmt->bindValue('fullname',$fullname);
 			$stmt->bindValue('username',$username);
 			$stmt->bindValue('email',$email);
+			$stmt->bindValue('id',$id);
 			$stmt->execute();
 			header('location:admin.php');
 		}
